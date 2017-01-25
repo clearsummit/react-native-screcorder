@@ -69,6 +69,15 @@ export default class Recorder extends Component {
     })
   }
 
+  stop(callback) {
+    if (!this.state.recording) return;
+
+    NativeModules.RNRecorderManager.pause(callback);
+    this.setState({
+      recording: false
+    })
+  }
+
   // Save the recording
   save(callback) {
     NativeModules.RNRecorderManager.save(callback);
