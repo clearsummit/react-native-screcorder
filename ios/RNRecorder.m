@@ -62,14 +62,17 @@
    _recorder.autoSetVideoOrientation = [RCTConvert BOOL:[config objectForKey:@"autoSetVideoOrientation"]];
 
    // Video config
-   _recorder.videoConfiguration.sizeAsSquare = [RCTConvert BOOL:[video objectForKey:@"sizeAsSquare"]];
    _recorder.videoConfiguration.enabled = [RCTConvert BOOL:[video objectForKey:@"enabled"]];
+	_recorder.videoConfiguration.sizeAsSquare = [RCTConvert BOOL:[video objectForKey:@"sizeAsSquare"]];
    _recorder.videoConfiguration.bitrate = [RCTConvert int:[video objectForKey:@"bitrate"]];
    _recorder.videoConfiguration.timeScale = [RCTConvert float:[video objectForKey:@"timescale"]];
    _videoFormat = [RCTConvert NSString:[video objectForKey:@"format"]];
    [self setVideoFormat:_videoFormat];
    _videoQuality = [RCTConvert NSString:[video objectForKey:@"quality"]];
    _videoFilters = [RCTConvert NSArray:[video objectForKey:@"filters"]];
+	
+	int64_t maxRecordDuration = (int64_t)[RCTConvert int:[video objectForKey:@"maxRecordDuration"]];
+	_recorder.maxRecordDuration = CMTimeMake(maxRecordDuration, (int32_t) _recorder.videoConfiguration.timeScale)
 
    // Audio config
    _recorder.audioConfiguration.enabled = [RCTConvert BOOL:[audio objectForKey:@"enabled"]];
