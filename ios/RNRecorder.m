@@ -46,8 +46,18 @@
             _recorder.delegate = self;
             _recorder.initializeSessionLazily = NO;
         }
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mediaServicesWereReset:) name:AVAudioSessionMediaServicesWereResetNotification object:nil];
     }
     return self;
+}
+
+#pragma mark - Observers
+
+- (void)mediaServicesWereReset:(NSNotification *)notification {
+    NSLog(@"FIXED - FORCE TO RESET CAPTURE SESSION");
+    [_recorder stopRunning];
+    [_recorder unprepare];
+    [_recorder startRunning];
 }
 
 #pragma mark - Setter
@@ -97,16 +107,16 @@
 - (void)setFlashMode: (NSInteger)mode
 {
     switch (mode) {
-            case 0:
+        case 0:
             _recorder.flashMode = SCFlashModeOff;
             break;
-            case 1:
+        case 1:
             _recorder.flashMode = SCFlashModeOn;
             break;
-            case 2:
+        case 2:
             _recorder.flashMode = SCFlashModeAuto;
             break;
-            case 3:
+        case 3:
             _recorder.flashMode = SCFlashModeLight;
             break;
         default:
@@ -136,9 +146,9 @@
         NSString *key1 = (NSString*)obj1;
         
         if ([key1 isEqualToString:@"CIfilter"] || [key1 isEqualToString:@"file"])
-        return (NSComparisonResult)NSOrderedAscending;
+            return (NSComparisonResult)NSOrderedAscending;
         else
-        return (NSComparisonResult)NSOrderedDescending;
+            return (NSComparisonResult)NSOrderedDescending;
     }];
     
     return sortedKeys;
@@ -320,7 +330,10 @@
     [_previewView removeFromSuperview];
     _previewView = nil;
     _session = nil;
+    
     [_recorder stopRunning];
+    [_recorder unprepare];
+    
     _recorder.session = nil;
     _recorder.previewView = nil;
     [super removeFromSuperview];
